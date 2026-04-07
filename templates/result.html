@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+</head>
+<body>
+
+<h1>Dataset Summary 📊</h1>
+
+<p>Rows: {{ rows }}</p>
+<p>Columns: {{ cols }}</p>
+
+<h3>Column Names:</h3>
+<ul>
+{% for col in columns %}
+    <li>{{ col }}</li>
+{% endfor %}
+</ul>
+
+<h3>Data Types:</h3>
+<ul>
+{% for col, dtype in dtypes.items() %}
+    <li>{{ col }} : {{ dtype }}</li>
+{% endfor %}
+</ul>
+
+</body>
+</html>
