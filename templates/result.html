@@ -24,5 +24,17 @@
 {% endfor %}
 </ul>
 
+<h2>Data Quality Report 🔍</h2>
+
+<p><b>Total Missing Values:</b> {{ total_missing }}</p>
+<p><b>Duplicate Rows:</b> {{ duplicates }}</p>
+
+<h3>Missing Values per Column:</h3>
+<ul>
+{% for col, val in missing_values.items() %}
+    <li>{{ col }} : {{ val }}</li>
+{% endfor %}
+</ul>
+
 </body>
 </html>

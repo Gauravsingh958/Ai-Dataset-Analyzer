@@ -13,27 +13,35 @@ def home():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    file = request.files['file']
+    file = request.files.get('file')
 
-    if file:
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(filepath)
+    if not file:
+        return "No file uploaded"
 
-        df = pd.read_csv(filepath)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(filepath)
 
-        rows, cols = df.shape
-        columns = list(df.columns)
-        dtypes = df.dtypes.astype(str)
+    df = pd.read_csv(filepath)
 
-        return render_template(
-            "result.html",
-            rows=rows,
-            cols=cols,
-            columns=columns,
-            dtypes=dtypes
-        )
+    # Basic info
+    rows, cols = df.shape
+    columns = list(df.columns)
+    dtypes = df.dtypes.astype(str)
 
-    return "No file uploaded"
+    #  NEW PART
+    missing_values = df.isnull().sum()
+    total_missing = missing_values.sum()
+    duplicates = df.duplicated().sum()
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    return render_template(
+        "result.html",
+        rows=rows,
+        cols=cols,
+        columns=columns,
+        dtypes=dtypes,
+        missing_values=missing_values,
+        total_missing=total_missing,
+        duplicates=duplicates
+    )
+if __name__ == "__main__":
+        app.run(debug=True)
