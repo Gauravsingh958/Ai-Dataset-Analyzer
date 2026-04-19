@@ -1,56 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Dataset Analyzer</title>
+    <title>AI Data Analyst</title>
+
     <style>
-        body {
-            font-family: Arial;
-            background-color: #f4f4f4;
-            text-align: center;
-            margin-top: 100px;
+        body { margin:0; font-family:Arial; display:flex; background:#f4f6f9; }
+
+        .sidebar {
+            width:250px;
+            background:#1e272e;
+            color:white;
+            padding:20px;
+            height:100vh;
         }
 
-        .container {
-            background: white;
-            padding: 30px;
-            width: 300px;
-            margin: auto;
-            border-radius: 10px;
-            box-shadow: 0 0 10px gray;
+        .main {
+            flex:1;
+            padding:40px;
+            text-align:center;
         }
 
-        h1 {
-            color: #333;
-        }
-
-        input[type="file"] {
-            margin: 20px 0;
+        .title {
+            font-size:40px;
+            color:#00a8ff;
         }
 
         button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
+            background:#00a8ff;
+            border:none;
+            padding:10px;
+            color:white;
+            border-radius:5px;
+            cursor:pointer;
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h1>AI Data Analyst 🤖</h1>
+<div class="sidebar">
+    <h2>📁 Upload Dataset</h2>
 
     <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" required>
-        <br>
-        <button type="submit">Upload Dataset</button>
+        <input type="file" name="file" required><br><br>
+        <button type="submit">Analyze</button>
     </form>
+</div>
+
+<div class="main">
+    <div class="title">AI Data Analyst 🚀</div>
+    <p>Upload dataset to generate insights & dashboard</p>
 </div>
 
 </body>
