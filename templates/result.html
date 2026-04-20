@@ -1,142 +1,186 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard</title>
+    <title>AI Dashboard</title>
 
     <style>
-        body { margin:0; font-family:Arial; display:flex; background:#f4f6f9; }
-
-        .sidebar {
-            width:250px;
-            background:#1e272e;
-            color:white;
-            padding:20px;
-            height:100vh;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
         }
 
-        .main { flex:1; padding:20px; }
+        body {
+            background: linear-gradient(135deg, #00a8ff, #9c88ff);
+            color: white;
+        }
 
-        .title { font-size:30px; color:#00a8ff; }
+        /* HEADER */
+        .header {
+            text-align: center;
+            padding: 30px;
+        }
 
+        .header h1 {
+            font-size: 50px;
+        }
+
+        /* CARDS */
         .cards {
-            display:flex;
-            gap:20px;
-            margin:20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px;
+            flex-wrap: wrap;
         }
 
         .card {
-            flex:1;
-            padding:20px;
-            color:white;
-            border-radius:10px;
-            text-align:center;
+            width: 200px;
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            transition: 0.3s;
         }
 
-        .blue { background:#00a8ff; }
-        .orange { background:#e84118; }
-        .green { background:#4cd137; }
-        .purple { background:#9c88ff; }
+        .card:hover {
+            transform: translateY(-10px);
+        }
 
+        .card h2 {
+            font-size: 30px;
+        }
+
+        /* SECTION */
         .section {
-            background:white;
-            padding:20px;
-            margin-top:20px;
-            border-radius:10px;
+            margin: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            background: rgba(255,255,255,0.15);
         }
 
+        .section h2 {
+            margin-bottom: 15px;
+        }
+
+        /* TABLE */
         table {
-            width:100%;
-            border-collapse:collapse;
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
         }
 
         th, td {
-            border:1px solid #ddd;
-            padding:8px;
-            text-align:center;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px;
+            text-align: center;
         }
 
         th {
-            background:#00a8ff;
-            color:white;
+            background: rgba(255,255,255,0.2);
         }
 
+        /* GRAPHS */
         .graphs {
-            display:flex;
-            gap:20px;
-            flex-wrap:wrap;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
         .graphs img {
-            width:300px;
-            border-radius:10px;
+            width: 300px;
+            border-radius: 10px;
         }
+
+        /* INSIGHTS */
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        /* BUTTON */
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: white;
+            color: #333;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 
 <body>
 
-<div class="sidebar">
-    <h2>📁 Upload</h2>
-
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file"><br><br>
-        <button type="submit">Re-Analyze</button>
-    </form>
+<!-- HEADER -->
+<div class="header">
+    <h1>📊 AI Data Dashboard</h1>
+    <p>Smart insights & analysis</p>
 </div>
 
-<div class="main">
-
-    <div class="title">📊 Dashboard</div>
-
-    <!-- CARDS -->
-    <div class="cards">
-        <div class="card blue">
-            <h2>{{ rows }}</h2>
-            <p>Rows</p>
-        </div>
-
-        <div class="card orange">
-            <h2>{{ cols }}</h2>
-            <p>Columns</p>
-        </div>
-
-        <div class="card green">
-            <h2>{{ total_missing }}</h2>
-            <p>Missing</p>
-        </div>
-
-        <div class="card purple">
-            <h2>{{ duplicates }}</h2>
-            <p>Duplicates</p>
-        </div>
+<!-- CARDS -->
+<div class="cards">
+    <div class="card">
+        <h2>{{ rows }}</h2>
+        <p>Rows</p>
     </div>
 
-    <!-- PREVIEW -->
-    <div class="section">
-        <h3>📄 Dataset Preview</h3>
-        {{ preview | safe }}
+    <div class="card">
+        <h2>{{ cols }}</h2>
+        <p>Columns</p>
     </div>
 
-    <!-- GRAPH -->
-    <div class="section">
-        <h3>📈 Graphs</h3>
-        <div class="graphs">
-            <img src="{{ url_for('static', filename='hist.png') }}">
-            <img src="{{ url_for('static', filename='bar.png') }}">
-            <img src="{{ url_for('static', filename='heatmap.png') }}">
-        </div>
+    <div class="card">
+        <h2>{{ total_missing }}</h2>
+        <p>Missing</p>
     </div>
 
-    <!-- INSIGHTS -->
-    <div class="section">
-        <h3>🤖 AI Insights</h3>
-        <ul>
+    <div class="card">
+        <h2>{{ duplicates }}</h2>
+        <p>Duplicates</p>
+    </div>
+</div>
+
+<!-- PREVIEW -->
+<div class="section">
+    <h2>📄 Dataset Preview</h2>
+    {{ preview | safe }}
+</div>
+
+<!-- GRAPHS -->
+<div class="section">
+    <h2>📈 Visualizations</h2>
+    <div class="graphs">
+        <img src="{{ url_for('static', filename='hist.png') }}">
+        <img src="{{ url_for('static', filename='bar.png') }}">
+        <img src="{{ url_for('static', filename='heatmap.png') }}">
+    </div>
+</div>
+
+<!-- INSIGHTS -->
+<div class="section">
+    <h2>🤖 AI Insights</h2>
+    <ul>
         {% for i in insights %}
             <li>{{ i }}</li>
         {% endfor %}
-        </ul>
-    </div>
+    </ul>
+</div>
 
+<!-- DOWNLOAD -->
+<div class="section">
+    <h2>⬇️ Download</h2>
+    <a href="/download" class="btn">Download Cleaned Data</a>
 </div>
 
 </body>
