@@ -15,7 +15,7 @@ os.makedirs("static", exist_ok=True)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template("index.html")
 
 
 @app.route('/upload', methods=['POST'])
@@ -25,60 +25,98 @@ def upload():
     if not file:
         return "No file uploaded"
 
+    # Save file
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(filepath)
 
+    # Read CSV
     df = pd.read_csv(filepath)
 
-    # 🔹 Basic Info
+    # ---------------- BASIC INFO ----------------
     rows, cols = df.shape
     missing_values = df.isnull().sum()
-    total_missing = missing_values.sum()
-    duplicates = df.duplicated().sum()
+    total_missing = int(missing_values.sum())
+    duplicates = int(df.duplicated().sum())
 
-    # 🔹 Preview
-    preview = df.head().to_html(classes="table", index=False)
+    # ---------------- PREVIEW ----------------
+    preview = df.head().to_html(index=False)
 
-    # 🔹 Graphs
+    # ---------------- COLUMN TYPES ----------------
     numeric_cols = df.select_dtypes(include='number').columns
-    cat_cols = df.select_dtypes(include='object').columns
+    categorical_cols = df.select_dtypes(include='object').columns
 
+    # ---------------- COLUMN ANALYSIS ----------------
+    numeric_analysis = []
+    for col in numeric_cols:
+        numeric_analysis.append({
+            "name": col,
+            "mean": round(df[col].mean(), 2),
+            "min": df[col].min(),
+            "max": df[col].max()
+        })
+
+    categorical_analysis = []
+    for col in categorical_cols:
+        categorical_analysis.append({
+            "name": col,
+            "unique": df[col].nunique(),
+            "top": df[col].mode()[0] if not df[col].mode().empty else "N/A"
+        })
+
+    # ---------------- OUTLIER DETECTION (IQR METHOD) ----------------
+    outliers = {}
+
+    for col in numeric_cols:
+        Q1 = df[col].quantile(0.25)
+        Q3 = df[col].quantile(0.75)
+        IQR = Q3 - Q1
+
+        lower = Q1 - 1.5 * IQR
+        upper = Q3 + 1.5 * IQR
+
+        count = df[(df[col] < lower) | (df[col] > upper)].shape[0]
+        outliers[col] = int(count)
+
+    # ---------------- GRAPHS ----------------
     if len(numeric_cols) > 0:
         plt.figure()
         df[numeric_cols[0]].hist()
+        plt.title(f"Histogram of {numeric_cols[0]}")
         plt.savefig("static/hist.png")
         plt.close()
 
-    if len(cat_cols) > 0:
+    if len(categorical_cols) > 0:
         plt.figure()
-        df[cat_cols[0]].value_counts().head(10).plot(kind='bar')
+        df[categorical_cols[0]].value_counts().head(10).plot(kind='bar')
+        plt.title(f"Top values of {categorical_cols[0]}")
         plt.savefig("static/bar.png")
         plt.close()
 
     corr = df.select_dtypes(include='number').corr()
     if not corr.empty:
-        plt.figure(figsize=(6,4))
+        plt.figure(figsize=(6, 4))
         sns.heatmap(corr, annot=True, cmap="coolwarm")
+        plt.title("Correlation Heatmap")
         plt.savefig("static/heatmap.png")
         plt.close()
 
-    # 🔹 Insights
+    # ---------------- AI INSIGHTS ----------------
     insights = []
 
-    for col, val in missing_values.items():
-        if val > 0:
-            insights.append(f"{col} has {val} missing values")
+    if total_missing > 0:
+        insights.append("Dataset contains missing values")
 
-    if not corr.empty:
-        for i in corr.columns:
-            for j in corr.columns:
-                if i != j and abs(corr.loc[i, j]) > 0.7:
-                    insights.append(f"High correlation between {i} and {j}")
-                    break
+    if duplicates > 0:
+        insights.append("Duplicate rows are present")
+
+    for col, val in outliers.items():
+        if val > 0:
+            insights.append(f"{col} has {val} outliers")
 
     if len(insights) == 0:
-        insights.append("Dataset looks clean 👍 No major issues found")
+        insights.append("Dataset looks clean and well structured")
 
+    # ---------------- RENDER ----------------
     return render_template(
         "result.html",
         rows=rows,
@@ -86,11 +124,12 @@ def upload():
         total_missing=total_missing,
         duplicates=duplicates,
         preview=preview,
-        missing_values=missing_values,
-        insights=insights
+        insights=insights,
+        numeric_analysis=numeric_analysis,
+        categorical_analysis=categorical_analysis,
+        outliers=outliers
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
-    

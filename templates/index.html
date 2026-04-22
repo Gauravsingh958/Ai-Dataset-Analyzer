@@ -12,19 +12,19 @@
         }
 
         body {
+            display: flex;
             height: 100vh;
             background: linear-gradient(135deg, #00a8ff, #9c88ff);
-            display: flex;
+            color: white;
         }
 
         /* SIDEBAR */
         .sidebar {
             width: 260px;
+            padding: 30px;
             backdrop-filter: blur(15px);
             background: rgba(255,255,255,0.15);
             border-right: 1px solid rgba(255,255,255,0.2);
-            padding: 30px;
-            color: white;
         }
 
         .sidebar h2 {
@@ -33,21 +33,21 @@
 
         input[type="file"] {
             width: 100%;
-            margin: 15px 0;
             padding: 8px;
-            border-radius: 5px;
+            border-radius: 8px;
             border: none;
+            margin-bottom: 15px;
         }
 
         button {
             width: 100%;
             padding: 10px;
             border: none;
+            border-radius: 10px;
             background: white;
             color: #333;
-            border-radius: 8px;
-            cursor: pointer;
             font-weight: bold;
+            cursor: pointer;
             transition: 0.3s;
         }
 
@@ -61,15 +61,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            color: white;
             flex-direction: column;
+            text-align: center;
         }
 
+        /* ANIMATED TITLE */
         .title {
-            font-size: 70px;
+            font-size: 70px;  
             font-weight: bold;
-            letter-spacing: 2px;
+            animation: colorChange 5s infinite alternate;
+        }
+
+        @keyframes colorChange {
+            0% { color: #ffffff; }
+            25% { color: #ffdd59; }
+            50% { color: #00ffcc; }
+            75% { color: #ff6b6b; }
+            100% { color: #ffffff; }
         }
 
         .subtitle {
@@ -78,7 +86,7 @@
             opacity: 0.9;
         }
 
-        .underline {
+        .line {
             width: 120px;
             height: 4px;
             background: white;
@@ -89,8 +97,8 @@
         /* CARD */
         .card {
             margin-top: 40px;
-            padding: 30px;
-            width: 350px;
+            padding: 25px;
+            width: 320px;
             backdrop-filter: blur(20px);
             background: rgba(255,255,255,0.2);
             border-radius: 15px;
@@ -102,10 +110,6 @@
             transform: translateY(-10px);
         }
 
-        .card h3 {
-            margin-bottom: 10px;
-        }
-
     </style>
 </head>
 
@@ -115,7 +119,7 @@
 <div class="sidebar">
     <h2>📁 Upload Dataset</h2>
 
-    <form action="/upload" method="post" enctype="multipart/form-data">
+    <form action="/upload" method="POST" enctype="multipart/form-data">
         <input type="file" name="file" required>
         <button type="submit">Analyze</button>
     </form>
@@ -123,15 +127,16 @@
 
 <!-- MAIN -->
 <div class="main">
-    <div class="title">AI Data Analyst 🚀</div>
-    <div class="underline"></div>
+    <div class="title">AI Data Analyst </div>
+    <div class="line"></div>
+
     <div class="subtitle">
-        Upload dataset & get instant insights, graphs and reports
+        Upload dataset & get smart insights instantly
     </div>
 
     <div class="card">
-        <h3>📊 Smart Dashboard</h3>
-        <p>Auto analysis, visualizations & AI insights in seconds.</p>
+        <h3>📊 Smart Analysis Tool</h3>
+        <p>Auto analysis, graphs, insights & outlier detection.</p>
     </div>
 </div>
 
